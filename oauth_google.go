@@ -16,16 +16,20 @@ import (
 
 const oauthGoogleUrlAPI = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="
 
-var googleOauthConfig = &oauth2.Config{
-	RedirectURL:  "http://localhost:8080/oauth2callback",
-	ClientID:	 os.Getenv("GCP_CLIENTID"),
-	ClientSecret: os.Getenv("GCP_SECRET"),
-	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
-	Endpoint:     google.Endpoint,
-}
+var googleOauthConfig *oauth2.Config
 
 var sessions = make(map[string]string)
 
+
+func initAuth() {
+	googleOauthConfig = &oauth2.Config{
+		RedirectURL:  "http://localhost:8080/oauth2callback",
+		ClientID:	 os.Getenv("GCP_CLIENTID"),
+		ClientSecret: os.Getenv("GCP_SECRET"),
+		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
+		Endpoint:     google.Endpoint,
+	}
+}
 
 func oauthGoogleLogin(w http.ResponseWriter, r *http.Request) {
 	session := getUUID()
