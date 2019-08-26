@@ -23,7 +23,7 @@ var sessions = make(map[string]string)
 
 func initAuth() {
 	googleOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:8080/oauth2callback",
+		RedirectURL:  "http://p1n1-1550265228779.appspot.com/oauth2callback",
 		ClientID:	 os.Getenv("GCP_CLIENTID"),
 		ClientSecret: os.Getenv("GCP_SECRET"),
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"},
