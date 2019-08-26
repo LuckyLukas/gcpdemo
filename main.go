@@ -2,19 +2,28 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"log"
-	"github.com/douglasmakey/oauth2-example/handlers"
+	"net/http"
 )
 
+func New() http.Handler {
+	mux := http.NewServeMux()
+	mux.Handle("/",  http.FileServer(http.Dir("templates/")))
+
+	// google login
+	mux.HandleFunc("/login", oauthGoogleLogin)
+	mux.HandleFunc("/oauth2callback", oauthGoogleCallback)
+
+	return mux
+}
+
 func main() {
-	// We create a simple server using http.Server and run.
 	server := &http.Server{
-		Addr: fmt.Sprintf(":8000"),
-		Handler: handlers.New(),
+		Addr: fmt.Sprintf(":8080"),
+		Handler: New(),
 	}
 
-	log.Printf("Starting HTTP Server. Listening at %q", server.Addr)
+	log.Printf("Starting Server. Listening at %q", server.Addr)
 	if err := server.ListenAndServe(); err != http.ErrServerClosed {
 		log.Printf("%v", err)
 	} else {
