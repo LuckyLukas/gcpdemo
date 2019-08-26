@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
-	"github.com/gofrs/uuid"
+	"github.com/google/uuid"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"io/ioutil"
@@ -71,7 +71,7 @@ func setAuthenticatedSessionCookie(w http.ResponseWriter, state string) {
 }
 
 func getUUID() string {
-	return uuid.Must(uuid.NewV4()).String()
+	return uuid.Must(uuid.NewUUID()).String()
 }
 
 func getUserDataFromGoogle(code string) ([]byte, error) {
