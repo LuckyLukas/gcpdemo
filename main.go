@@ -4,20 +4,27 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 )
 
 func info(w http.ResponseWriter, r *http.Request) {
-	clientid := os.Getenv("GCP_CLIENTID")
-	secret := os.Getenv("GCP_SECRET")
-	fmt.Fprint(w, "id: %d, s: %d", len(clientid), len(secret))
+	session, _ := r.Cookie("SESSION")
+	info := sessions[session.Value]
+	fmt.Fprint(w, info)
+}
+
+
+func logout(w http.ResponseWriter, r *http.Request) {
+	session, _ := r.Cookie("SESSION")
+	sessions[session.Value] = ""
+	http.Redirect(w, r, "/", 302)
 }
 
 func New() http.Handler {
 	mux := http.NewServeMux()
 	mux.Handle("/",  http.FileServer(http.Dir("templates/")))
 	mux.HandleFunc("/info", info)
-	// google login
+
+	mux.HandleFunc("/logout", logout)
 	mux.HandleFunc("/login", oauthGoogleLogin)
 	mux.HandleFunc("/oauth2callback", oauthGoogleCallback)
 

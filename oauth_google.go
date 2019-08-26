@@ -20,7 +20,6 @@ var googleOauthConfig *oauth2.Config
 
 var sessions = make(map[string]string)
 
-
 func initAuth() {
 	googleOauthConfig = &oauth2.Config{
 		RedirectURL:  "http://p1n1-1550265228779.appspot.com/oauth2callback",
@@ -35,7 +34,8 @@ func oauthGoogleLogin(w http.ResponseWriter, r *http.Request) {
 	session := getUUID()
 	state := base64.URLEncoding.EncodeToString([]byte(getUUID()))
 	sessions[session] = state
-	setAnonymousSessionCookie(w, state)
+
+	setAnonymousSessionCookie(w, session)
 	u := googleOauthConfig.AuthCodeURL(state)
 	http.Redirect(w, r, u, http.StatusFound)
 }
@@ -55,11 +55,11 @@ func oauthGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
-
 	authenticatedSession := getUUID()
 	sessions[authenticatedSession] = string(data)
 	sessions[session.Value] = ""
 	setAuthenticatedSessionCookie(w, authenticatedSession)
+	http.Redirect(w, r, "/info", 302)
 }
 
 func setAnonymousSessionCookie(w http.ResponseWriter, state string) {
